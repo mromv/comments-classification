@@ -1,0 +1,54 @@
+[tool.mypy]
+exclude = ["tests", ".venv"]
+check_untyped_defs = true
+
+[tool.commitizen]
+name = "cz_customize"
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}[{{issue_number}}]:{% if show_message %} {{message}}{% endif %}"
+example = "docs[18584]: add new docs."
+schema = "<type>[<issue_number>]: <body>"
+schema_pattern = "(fix|wip|docs|sub|ref)(\\[\\d+\\])?:(\\s.*)"
+change_type_order = ["wip", "fix", "docs", "sub", "ref"]
+commit_parser = "^(?P<change_type>fix|wip|docs|sub|ref)\\(\\[?P<issue_number>\\]\\):\\s(?P<message>.*)?"
+
+[[tool.commitizen.customize.questions]]
+type = "list"
+name = "change_type"
+message = "Select the type of change you are committing:"
+
+[[tool.commitizen.customize.questions.choices]]
+value = "wip"
+name = "wip: Work in progress."
+
+[[tool.commitizen.customize.questions.choices]]
+value = "fix"
+name = "fix: Fix something wrong."
+
+[[tool.commitizen.customize.questions.choices]]
+value = "docs"
+name = "docs: Change documentation."
+
+[[tool.commitizen.customize.questions.choices]]
+value = "sub"
+name = "sub: Some subsidary work."
+
+[[tool.commitizen.customize.questions.choices]]
+value = "ref"
+name = "ref: Refactoring."
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "issue_number"
+message = "Issue nember:"
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "message"
+message = "Body:"
+
+[[tool.commitizen.customize.questions]]
+type = "confirm"
+name = "show_message"
+message = "Do you want to add body message in commit?"

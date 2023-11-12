@@ -1,0 +1,25 @@
+---
+title: "Report example"
+jupyter: python3
+---
+# Пример отчета по исследованию
+
+В начале нового исследования необходимо получить данные, с которыми планируется работать. Например, из LakeFS:
+```{python}
+import polars as pl
+import s3fs
+
+from src.config import compose_config
+
+lakefs_config = compose_config(overrides=["data=lakefs"]).data
+lakefs_fs = s3fs.S3FileSystem(
+    endpoint_url=lakefs_config.host,
+    key=lakefs_config.username,
+    secret=lakefs_config.password,
+)
+
+with lakefs_fs.open("<repo-name>/<commit>/<path/to/file/data.csv>", mode="rb") as f:
+    lakefs_data = pl.read_csv(f)
+```
+
+Таким образом вы получаете готовый датасет, можно приступать к анализу.

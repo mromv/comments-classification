@@ -1,0 +1,3 @@
+host: ${secrets.LAKEFS_ENDPOINT}
+username: ${secrets.LAKEFS_ACCESS_KEY}
+password: ${secrets.LAKEFS_SECRET_KEY}

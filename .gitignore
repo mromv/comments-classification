@@ -1,0 +1,12 @@
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+# And except this
+!/src/
+!**.qmd
+!README.md
+!pyproject.toml
+!pixi.toml
+!pixi.lock
+!.pre-commit-config.yaml

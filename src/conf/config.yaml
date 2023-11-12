@@ -1,0 +1,4 @@
+defaults:
+  - data: lakefs
+  - secrets:
+      - lakefs-cred
