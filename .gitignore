@@ -2,6 +2,7 @@
 *
 # Except this file
 !.gitignore
+test.py
 # And except this
 !/src/
 !**.qmd
