@@ -71,12 +71,12 @@ print(data['Category'].unique())
 ```{python}
 def get_corpus(data: np.array) -> list:
     corpus = []
-    
+
     for sentence in data:
         for word in sentence.split():
             corpus.append(word)
     return corpus
-    
+
 # Облако слов
 def get_wordCloud(corpus: list):
     wordCloud = WordCloud(background_color='white',
@@ -102,7 +102,7 @@ plt.subplot(1, 2, 1)
 plt.show()
 ```
 
-Осуществим минимальную обработку текста, включая удаление строк длины меньше 10, 
+Осуществим минимальную обработку текста, включая удаление строк длины меньше 10,
 так как они в основном состоят из спец. знаков, слов благодарности или просто несвязных слов и символов.
 
 ```{python}
@@ -129,7 +129,7 @@ def del_space(text: str) -> str:
 # исключение латиницы, цифр, спец. знаков
 def drop_patterns(text: str) -> str:
     patterns = "[A-z0-9!‘’#$%&'()*+,./:;<=>?@[\]^_`{|}~—\"\-]+"
-    
+
     text = re.sub(patterns, ' ', text) # отбросили паттерны
     text = re.sub(r"[\n\t]", ' ', text)
 
@@ -139,15 +139,15 @@ def drop_patterns(text: str) -> str:
 def drop_emojis(text: str) -> str:
     emoj = re.compile("["
         u"\U0001F600-\U0001F64F"
-        u"\U0001F300-\U0001F5FF" 
-        u"\U0001F680-\U0001F6FF" 
-        u"\U0001F1E0-\U0001F1FF"  
-        u"\U00002500-\U00002BEF"  
+        u"\U0001F300-\U0001F5FF"
+        u"\U0001F680-\U0001F6FF"
+        u"\U0001F1E0-\U0001F1FF"
+        u"\U00002500-\U00002BEF"
         u"\U00002702-\U000027B0"
         u"\U000024C2-\U0001F251"
         u"\U0001f926-\U0001f937"
         u"\U00010000-\U0010ffff"
-        u"\u2640-\u2642" 
+        u"\u2640-\u2642"
         u"\u2600-\u2B55"
         u"\u200d"
         u"\u23cf"
@@ -209,12 +209,12 @@ plt.show()
 data['Category'].value_counts()
 ```
 
-Изобразим распределение длин комментариев в датасете после предобработки текстов. 
+Изобразим распределение длин комментариев в датасете после предобработки текстов.
 
 ```{python}
 data_lens = data['data_patterns'].str.len()
-sns.distplot(data_lens[data_lens <= 1024], hist=True, kde=True, 
-             bins=40, color = 'darkblue', 
+sns.distplot(data_lens[data_lens <= 1024], hist=True, kde=True,
+             bins=40, color = 'darkblue',
              hist_kws={'edgecolor':'black'},
              kde_kws={'linewidth': 4}, axlabel='Length')
 
