@@ -7,6 +7,12 @@ channels = ["nvidia", "pytorch", "conda-forge", "anaconda"]
 platforms = ["linux-64", "win-64"]
 readme = "README.md"
 
+[activation]
+scripts = ["setup.sh"]
+
+[target.win-64.activation]
+scripts = ["setup.bat"]
+
 [dependencies]
 python = "==3.11.6"
 git = ">=2.42"
@@ -40,9 +46,8 @@ imbalanced-learn = "*"
 accelerate = "*"
 lightning = "2.1.1"
 catboost = "*"
-wordcloud = ">=1.9"
-sentence-transformers = ">=2.2"
-seaborn = "0.13.0"
+bertopic = ">=0.16.0,<0.17"
+sentence-transformers = ">=2.0.0,<2.6"
 
 [pypi-dependencies]
 emosent-py = "*"

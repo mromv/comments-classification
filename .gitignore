@@ -2,7 +2,7 @@
 *
 # Except this file
 !.gitignore
-test.py
+
 # And except this
 !/src/
 !**.qmd
@@ -11,3 +11,5 @@ test.py
 !pixi.toml
 !pixi.lock
 !.pre-commit-config.yaml
+!/data/
+!/reports/
