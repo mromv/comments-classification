@@ -1,0 +1,221 @@
+---
+title: Препроцессинг данных
+format:
+  html:
+    page-layout: full # Тип расположения контента на странице
+    code-fold: true # Сворачивание кода в отдельные блоки
+    code-summary: Show the code # Действие со свернутыми блоками кода
+    self-contained: true
+    anchor-sections: true
+    smooth-scroll: true
+    toc: true # Добавить содержание
+    toc-depth: 4 # Максимальная глубина вложений в содержании
+    toc-title: Содержание # Заголовок содержания
+    toc-location: left # Местоположение содержания
+execute:
+  enabled: true
+  keep-ipynb: true
+jupyter: python3
+---
+
+```{python}
+import warnings
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pymorphy3
+import re
+import nltk
+
+from wordcloud import WordCloud
+```
+
+Импортируем необходимые библиотеки и корпус стоп-слов.
+
+```{python}
+#| output: false
+warnings.filterwarnings("ignore")
+nltk.download("stopwords")
+russian_stopwords = nltk.corpus.stopwords.words("russian")
+```
+
+### Минимальная предобработка
+
+Загрузим данные и выведем размерность.
+
+```{python}
+data = pd.read_csv("../data/practice_cleaned.csv")
+print(data.shape)
+```
+
+Переименуем столбцы и посмотрим на датасет.
+
+```{python}
+data_prep = data.rename(columns={'Комментарий': 'Comment', 'Категория': 'Category'})
+display(data.head(2))
+```
+
+Обратим внимание на пропущенные значения и принимаемые значения целевой переменной.
+
+```{python}
+display(data_prep.isnull().sum())
+```
+
+```{python}
+print(data_prep['Category'].unique())
+```
+
+Определим функции для отрисовки облака слов.
+
+```{python}
+def get_corpus(data: np.array) -> list:
+    corpus = []
+
+    for sentence in data:
+        for word in sentence.split():
+            corpus.append(word)
+    return corpus
+
+# Облако слов
+def get_word_cloud(corpus: list):
+    word_cloud = WordCloud(background_color='white',
+                           width=3000,
+                           height=2500,
+                           max_words=200,
+                           random_state=42
+                           ).generate(' '.join(corpus))
+    return word_cloud
+```
+
+Изобразим облако слов данных до обработки.
+
+```{python}
+corpus = get_corpus(data_prep['Comment'].values)
+proc_word_cloud = get_word_cloud(corpus)
+
+fig = plt.figure(figsize=(20, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(proc_word_cloud)
+plt.axis('off')
+plt.subplot(1, 2, 1)
+plt.show()
+```
+
+Осуществим минимальную обработку текста, включая удаление строк длины меньше 10,
+так как они в основном состоят из спец. знаков, слов благодарности или просто несвязных слов и символов.
+
+```{python}
+def preprocess_data(data: pd.Series) -> pd.Series:
+    df = data.dropna(subset=['Category', 'Comment'])  # исключим пустые строки
+    df = df.drop(df[df['Comment'].str.len() < 10].index)  # очищаем данные от строк длины меньше 10
+    df['Comment'] = df['Comment'].str.lower()  # приводим к одному регистру
+    df = df.loc[~df['Category'].isin(["Качество материалов", "Интерфейс платформы", "Общение с куратором"])]  # отбрасываем малые классы
+    df.reset_index(drop=True, inplace=True)
+    return df
+
+data_prep = preprocess_data(data_prep[['Category', 'Comment']])
+```
+
+### Более детальный взгляд на данные
+
+Теперь определим функции для обработки текстов.
+
+```{python}
+# удаление лишних пробелов в тексте
+def del_space(text: str) -> str:
+    return re.sub(" +", " ", text)
+
+# исключение латиницы, цифр, спец. знаков
+def drop_patterns(text: str) -> str:
+    patterns = r"[A-z0-9!‘’#$%&'()*+,./:;<=>?@[\]^_`{|}~—\"\-]+"
+
+    text = re.sub(patterns, ' ', text) # отбросили паттерны
+    text = re.sub(r"[\n\t]", ' ', text)
+
+    return del_space(text)
+
+# удаление смайлов
+def drop_emojis(text: str) -> str:
+    emoj = re.compile("["
+        u"\U0001F600-\U0001F64F"
+        u"\U0001F300-\U0001F5FF"
+        u"\U0001F680-\U0001F6FF"
+        u"\U0001F1E0-\U0001F1FF"
+        u"\U00002500-\U00002BEF"
+        u"\U00002702-\U000027B0"
+        u"\U000024C2-\U0001F251"
+        u"\U0001f926-\U0001f937"
+        u"\U00010000-\U0010ffff"
+        u"\u2640-\u2642"
+        u"\u2600-\u2B55"
+        u"\u200d"
+        u"\u23cf"
+        u"\u23e9"
+        u"\u231a"
+        u"\ufe0f"
+        u"\u3030"
+                      "]+", re.UNICODE)
+    return re.sub(emoj, '', text)
+
+# удаление стоп-слов
+def remove_stopwords(text: str) -> str:
+    return ' '.join([word for word in text.split() if word not in (russian_stopwords)])
+
+# лемматизация слов в тексте
+morph = pymorphy3.MorphAnalyzer()
+def lemmatization(text: str) -> str:
+    return ' '.join([morph.parse(word)[0].normal_form for word in text.split()])
+```
+
+Для разных целей понадобятся датасеты с разной степенью обработки, поэтому сохраним в один датафрейм данные с разной обработкой.
+
+```{python}
+data_prep['data_patterns'] = data_prep['Comment'].apply(drop_patterns).apply(drop_emojis) # без символов и смайлов
+data_prep['data_stopwords'] = data_prep['data_patterns'].apply(remove_stopwords) # + без стоп-слов
+data_prep['data_lemma'] = data_prep['data_stopwords'].apply(lemmatization) # + лемматизация
+```
+
+И удалим комментарии, в которых длина комментария после удаления стоп-слов и лемматизации не больше 3.
+
+```{python}
+data_prep = data_prep[data_prep['data_lemma'].str.len() > 3]
+```
+
+Экспортируем обработанный датасет для дальнейшего использования в работе.
+
+```{python}
+data_prep.to_csv('../data/1_preprocessed_data.csv', index=False)
+```
+
+Облако слов после обработки комментариев выглядит куда более осмысленным, но отметим преобладание слов благодарностей.
+
+```{python}
+# облако слов после полного процессинга
+proc_word_cloud = get_word_cloud(data_prep['data_lemma'])
+
+fig = plt.figure(figsize=(20, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(proc_word_cloud)
+plt.axis('off')
+plt.subplot(1, 2, 1)
+plt.show()
+```
+
+Также обратим внимание на ярко выраженный дисбаланс классов.
+
+```{python}
+data_prep['Category'].value_counts()
+```
+
+Изобразим распределение длин комментариев в датасете после предобработки текстов.
+
+```{python}
+data_lens = data_prep['data_patterns'].str.len()
+sns.distplot(data_lens[data_lens <= 1024], hist=True, kde=True,
+             bins=40, color = 'darkblue',
+             hist_kws={'edgecolor':'black'},
+             kde_kws={'linewidth': 4}, axlabel='Length')
+
+plt.show()
+```
