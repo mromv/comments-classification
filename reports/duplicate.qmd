@@ -1,0 +1,169 @@
+---
+title: Дедупликация текстов на основании косинусного подобия
+format:
+  html:
+    page-layout: full # Тип расположения контента на странице
+    code-fold: true # Сворачивание кода в отдельные блоки
+    code-summary: Show the code # Действие со свернутыми блоками кода
+    self-contained: true
+    anchor-sections: true
+    smooth-scroll: true
+    toc: true # Добавить содержание
+    toc-depth: 4 # Максимальная глубина вложений в содержании
+    toc-title: Содержание # Заголовок содержания
+    toc-location: left # Местоположение содержания
+execute:
+  enabled: true
+  keep-ipynb: true
+jupyter: python3
+---
+
+```{python}
+import warnings
+import pandas as pd
+import numpy as np
+import torch
+import transformers
+from sentence_transformers import SentenceTransformer, util
+import pymorphy3
+from nltk.tokenize import word_tokenize
+```
+
+Импортируем необходимые библиотеки и корпус стоп-слов.
+
+```{python}
+#| output: false
+warnings.filterwarnings("ignore")
+```
+
+Используем данные после препроцессинга.
+
+```{python}
+data = pd.read_csv('../data/1_preprocessed_data.csv')
+print(data.shape)
+```
+
+### Разметка имен в датасете
+
+Кажется, что при удалении однообразных благодарностей из текста нам бы не хотелось потерять информацию об обращениях к каким-то лицам, ибо в определенных классах имена могут встречаться гораздо чаще, чем в других. Поэтому предлагается разметить все отзывы в датасете на их наличие. И удалить только те отзывы с благодарностями, в которых нет упоминания имён. 
+
+Для решения задачи будет использован довольно простой инструмент - библиотека pymorphy3.
+
+```{python}
+morph = pymorphy3.MorphAnalyzer()
+def name_rec(data: np.array) -> list:
+    names = []
+    for sent in data:
+        name = False
+        for word in word_tokenize(sent):
+            if not name:
+                for parse in morph.parse(word)[:2]:
+                    if 'Name' in parse.tag or 'Surn' in parse.tag:
+                        name = True
+                        break
+            else:
+                break
+        
+        names.append(name)
+    
+    return names
+
+is_name = name_rec(data.data_lemma.values)
+data['is_name'] = is_name
+```
+
+Сколько всего имен удалось определить:
+
+```{python}
+data['is_name'].value_counts()
+```
+
+В каких категориях:
+
+```{python}
+data.loc[data.is_name == 1]['Category'].value_counts()
+```
+
+
+### Исключение благодарностей
+
+Используем предобученную мультиязычную модель на ~117M параметров, которая неплохо справляется с русским языком.
+
+```{python}
+model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+print(f"Кол-вол параметров: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
+```
+
+Возьмем сгенерированные благодарности, получим их эмбеддинги и центрируем их.
+
+```{python}
+sentences = [
+  'Спасибо огромное, все было замечательно',
+  'Мне очень понравилось, максимальная оценка, спасибо большое',
+  'Благодарю вас за интересный и полезный курс',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм',
+  'Я очень доволен курсом, спасибо вам',
+  'Благодарю вас за качественное обучение',
+  'Спасибо за интересный и полезный материал',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм',
+  'Я очень доволен курсом, спасибо вам',
+  'Благодарю вас за качественное обучение',
+  'Спасибо за интересный и полезный материал',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм',
+  'Я очень доволен курсом, спасибо вам',
+  'Благодарю вас за качественное обучение',
+  'Спасибо за интересный и полезный материал',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм',
+  'Я очень доволен курсом, спасибо вам',
+  'Благодарю вас за качественное обучение',
+  'Спасибо за интересный и полезный материал',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм',
+  'Я очень доволен курсом, спасибо вам',
+  'Благодарю вас за качественное обучение',
+  'Спасибо за интересный и полезный материал',
+  'Я получил много новых знаний, спасибо вам',
+  'Огромное спасибо за ваш труд и профессионализм!'
+  ]
+
+centered_embeddings = model.encode(sentences, convert_to_tensor=False).mean(axis=0)
+```
+
+По косинусному расстоянию выберем ближайшие к благодарностям отзывы и исключим их.
+
+```{python}
+cos_sim_df = util.pytorch_cos_sim(
+                model.encode(data['data_patterns'], convert_to_tensor=False),
+                centered_embeddings).flatten()
+
+cos_sim_df = np.array(cos_sim_df)
+```
+
+Количество найденных и исключаемых благодарностей.
+
+```{python}
+excl_data = data.loc[(cos_sim_df > 0.7) & (data.is_name == 0)]
+print(f"Всего найдено благодарностей: {data.loc[cos_sim_df > 0.7].shape[0]}")
+print(f"Будет исключено: {excl_data.shape[0]}")
+
+# по категориям
+excl_data.Category.value_counts()
+```
+
+Посмотрим на некоторые случайно выбранные исключаемые отзывы:
+
+```{python}
+np.random.seed(1)
+excl_data.Comment.values[np.random.randint(0, excl_data.shape[0], size=10)]
+```
+
+Сохраним очищенный датасет.
+
+```{python}
+data[~data.index.isin(excl_data.index)].to_csv('../data/2_preprocessed_data.csv', index=False)
+```
+
