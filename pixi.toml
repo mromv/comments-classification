@@ -48,6 +48,8 @@ lightning = "2.1.1"
 catboost = "*"
 bertopic = ">=0.16.0,<0.17"
 sentence-transformers = ">=2.0.0,<2.6"
+seaborn = "0.13.0"
+wordcloud = ">=1.9"
 
 [pypi-dependencies]
 emosent-py = "*"

@@ -14295,6 +14295,54 @@ package:
   purls:
   - pkg:pypi/parso
 - platform: linux-64
+  name: patsy
+  version: 0.5.6
+  category: main
+  manager: conda
+  dependencies:
+  - numpy >=1.4.0
+  - python >=3.6
+  - six
+  url: https://conda.anaconda.org/conda-forge/noarch/patsy-0.5.6-pyhd8ed1ab_0.conda
+  hash:
+    md5: a5b55d1cb110cdcedc748b5c3e16e687
+    sha256: 35ad5cab1d9c08cf98576044bf28f75e62f8492afe6d1a89c94bbe93dc8d7258
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-2-Clause AND PSF-2.0
+  license_family: BSD
+  noarch: python
+  size: 187218
+  timestamp: 1704469432353
+  purls:
+  - pkg:pypi/patsy
+- platform: win-64
+  name: patsy
+  version: 0.5.6
+  category: main
+  manager: conda
+  dependencies:
+  - numpy >=1.4.0
+  - python >=3.6
+  - six
+  url: https://conda.anaconda.org/conda-forge/noarch/patsy-0.5.6-pyhd8ed1ab_0.conda
+  hash:
+    md5: a5b55d1cb110cdcedc748b5c3e16e687
+    sha256: 35ad5cab1d9c08cf98576044bf28f75e62f8492afe6d1a89c94bbe93dc8d7258
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: win-64
+  build_number: 0
+  license: BSD-2-Clause AND PSF-2.0
+  license_family: BSD
+  noarch: python
+  size: 187218
+  timestamp: 1704469432353
+  purls:
+  - pkg:pypi/patsy
+- platform: linux-64
   name: pcre2
   version: '10.40'
   category: main
@@ -18402,6 +18450,100 @@ package:
   size: 15968999
   timestamp: 1706043936628
 - platform: linux-64
+  name: seaborn
+  version: 0.13.0
+  category: main
+  manager: conda
+  dependencies:
+  - seaborn-base >=0.13.0,<0.13.1.0a0
+  - statsmodels >=0.12
+  url: https://conda.anaconda.org/conda-forge/noarch/seaborn-0.13.0-hd8ed1ab_0.conda
+  hash:
+    md5: ebd31a95a7008b7e164dad9dbbb5bb5a
+    sha256: 8b6bd68c99fa5f58c4c247daf16a3b28dcef6ffb237c5b382b4750186d9ce54d
+  build: hd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 6681
+  timestamp: 1696262596847
+- platform: win-64
+  name: seaborn
+  version: 0.13.0
+  category: main
+  manager: conda
+  dependencies:
+  - seaborn-base >=0.13.0,<0.13.1.0a0
+  - statsmodels >=0.12
+  url: https://conda.anaconda.org/conda-forge/noarch/seaborn-0.13.0-hd8ed1ab_0.conda
+  hash:
+    md5: ebd31a95a7008b7e164dad9dbbb5bb5a
+    sha256: 8b6bd68c99fa5f58c4c247daf16a3b28dcef6ffb237c5b382b4750186d9ce54d
+  build: hd8ed1ab_0
+  arch: x86_64
+  subdir: win-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 6681
+  timestamp: 1696262596847
+- platform: linux-64
+  name: seaborn-base
+  version: 0.13.0
+  category: main
+  manager: conda
+  dependencies:
+  - matplotlib-base >=3.3,!=3.6.1
+  - numpy >=1.20,!=1.24.0
+  - pandas >=1.2
+  - python >=3.8
+  - scipy >=1.3
+  url: https://conda.anaconda.org/conda-forge/noarch/seaborn-base-0.13.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 082666331726b2438986cfe33ae9a8ee
+    sha256: e121a15200a420ceac466b08eda87c9c4b9668ed34a421f5d5c8baeefe6b6210
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 233784
+  timestamp: 1696262588735
+  purls:
+  - pkg:pypi/seaborn
+- platform: win-64
+  name: seaborn-base
+  version: 0.13.0
+  category: main
+  manager: conda
+  dependencies:
+  - matplotlib-base >=3.3,!=3.6.1
+  - numpy >=1.20,!=1.24.0
+  - pandas >=1.2
+  - python >=3.8
+  - scipy >=1.3
+  url: https://conda.anaconda.org/conda-forge/noarch/seaborn-base-0.13.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 082666331726b2438986cfe33ae9a8ee
+    sha256: e121a15200a420ceac466b08eda87c9c4b9668ed34a421f5d5c8baeefe6b6210
+  build: pyhd8ed1ab_0
+  arch: x86_64
+  subdir: win-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  noarch: python
+  size: 233784
+  timestamp: 1696262588735
+  purls:
+  - pkg:pypi/seaborn
+- platform: linux-64
   name: secretstorage
   version: 3.3.3
   category: main
@@ -19067,6 +19209,64 @@ package:
   timestamp: 1659923798627
   purls:
   - pkg:pypi/starsessions
+- platform: linux-64
+  name: statsmodels
+  version: 0.14.1
+  category: main
+  manager: conda
+  dependencies:
+  - libgcc-ng >=12
+  - numpy >=1.23.5,<2.0a0
+  - packaging >=21.3
+  - pandas >=1.0,!=2.1.0
+  - patsy >=0.5.4
+  - python >=3.11,<3.12.0a0
+  - python_abi 3.11.* *_cp311
+  - scipy >=1.4,!=1.9.2
+  url: https://conda.anaconda.org/conda-forge/linux-64/statsmodels-0.14.1-py311h1f0f07a_0.conda
+  hash:
+    md5: 11ea602c16ad004033edf648ce054f9e
+    sha256: fe415b4718cc2cbbcfccd4d79fe3c20ae402c8cae7fdf9ff974ee986e8d6df05
+  build: py311h1f0f07a_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 12472131
+  timestamp: 1702575885152
+  purls:
+  - pkg:pypi/statsmodels
+- platform: win-64
+  name: statsmodels
+  version: 0.14.1
+  category: main
+  manager: conda
+  dependencies:
+  - numpy >=1.23.5,<2.0a0
+  - packaging >=21.3
+  - pandas >=1.0,!=2.1.0
+  - patsy >=0.5.4
+  - python >=3.11,<3.12.0a0
+  - python_abi 3.11.* *_cp311
+  - scipy >=1.4,!=1.9.2
+  - ucrt >=10.0.20348.0
+  - vc >=14.2,<15
+  - vc14_runtime >=14.29.30139
+  url: https://conda.anaconda.org/conda-forge/win-64/statsmodels-0.14.1-py311h59ca53f_0.conda
+  hash:
+    md5: cd29d9e100874852c49ef1718c7a34df
+    sha256: 3d9ce45d682c01bc93f302d1f3bfc4a85af58e307088a1a7eecf30a89a22e0cb
+  build: py311h59ca53f_0
+  arch: x86_64
+  subdir: win-64
+  build_number: 0
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 11766820
+  timestamp: 1702576774886
+  purls:
+  - pkg:pypi/statsmodels
 - platform: linux-64
   name: sympy
   version: '1.12'
@@ -20898,6 +21098,60 @@ package:
   license: MIT
   license_family: MIT
   size: 1176306
+- platform: linux-64
+  name: wordcloud
+  version: 1.9.3
+  category: main
+  manager: conda
+  dependencies:
+  - libgcc-ng >=12
+  - matplotlib-base
+  - numpy >=1.6.1
+  - pillow
+  - python >=3.11,<3.12.0a0
+  - python_abi 3.11.* *_cp311
+  url: https://conda.anaconda.org/conda-forge/linux-64/wordcloud-1.9.3-py311h459d7ec_0.conda
+  hash:
+    md5: dfe45fb77dd955cd79ccd3e87b044dec
+    sha256: 0979f16848f748769df93f1c201baf2e4bbbe42f8fba690923957cb458ea412a
+  build: py311h459d7ec_0
+  arch: x86_64
+  subdir: linux-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  size: 191596
+  timestamp: 1702301842265
+  purls:
+  - pkg:pypi/wordcloud
+- platform: win-64
+  name: wordcloud
+  version: 1.9.3
+  category: main
+  manager: conda
+  dependencies:
+  - matplotlib-base
+  - numpy >=1.6.1
+  - pillow
+  - python >=3.11,<3.12.0a0
+  - python_abi 3.11.* *_cp311
+  - ucrt >=10.0.20348.0
+  - vc >=14.2,<15
+  - vc14_runtime >=14.29.30139
+  url: https://conda.anaconda.org/conda-forge/win-64/wordcloud-1.9.3-py311ha68e1ae_0.conda
+  hash:
+    md5: f16bab6322a50a3fb29171d748396451
+    sha256: ec79348e803cbbac5bee4f06b5e56f09da322e516e5672e96c1ef691eb7e1156
+  build: py311ha68e1ae_0
+  arch: x86_64
+  subdir: win-64
+  build_number: 0
+  license: MIT
+  license_family: MIT
+  size: 296515
+  timestamp: 1702302448634
+  purls:
+  - pkg:pypi/wordcloud
 - platform: linux-64
   name: wrapt
   version: 1.16.0
