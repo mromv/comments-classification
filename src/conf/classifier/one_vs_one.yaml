@@ -1,0 +1,12 @@
+Model:
+  _target_: sklearn.multiclass.OneVsOneClassifier
+  estimator:
+    _target_: catboost.CatBoostClassifier
+    loss_function: MultiClass
+    depth: 7
+    iterations: 1000
+    learning_rate: 0.001
+    early_stopping_rounds: 30
+    verbose: False
+    task_type: GPU
+  n_jobs: 8

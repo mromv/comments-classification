@@ -1,4 +1,32 @@
 defaults:
-  - data: lakefs
-  - secrets:
-      - lakefs-cred
+  - _self_
+  - encoder: MiniLM
+  - dim_reduce: none
+  - classifier: catboost
+
+data:
+  column_use: data_patterns
+  ml_data: MiniLM_sentence_embedding.npy
+
+hydra:
+  run:
+    dir: ../outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ../m_outputs/${now:%Y-%m-%d}
+    subdir: ${now:%Y-%m-%d_%H-%M-%S}_tfidf_reduce_ovo_${hydra.job.num}
+
+  sweeper:
+    params:
+      data.ml_data: distilroberta_token_embeddings-idf.npy, distilroberta_token_embeddings-mean.npy,
+                    MiniLM_sentence_embedding.npy, MiniLM_token_embeddings-idf.npy, MiniLM_token_embeddings-mean.npy
+      dim_reduce: none
+      classifier: catboost
+      classifier.Model.depth: 9
+      classifier.Model.learning_rate: 0.01
+
+general:
+  device: cuda:0
+  random_state: 42
+  cache_dir: ../../cache_dir
+  data_dir: ../../data
+  test_size: 0.3

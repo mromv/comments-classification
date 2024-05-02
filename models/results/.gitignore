@@ -2,6 +2,10 @@
 *
 # Except this
 !.gitignore
+!/*/
 !*.py
 !*.qmd
 !*.html
+!*.log
+!*.yaml
+!*.hydra

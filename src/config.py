@@ -3,28 +3,13 @@ from typing import Any, cast
 
 from hydra import compose, initialize
 from omegaconf import OmegaConf
-from pydantic import BaseModel
-
-
-class LakeFS(BaseModel):
-    """LakeFS security config."""
-
-    host: str
-    username: str
-    password: str
-
-
-class Config(BaseModel):
-    """Config model for typing."""
-
-    data: LakeFS
 
 
 def compose_config(
     overrides: list[str] | None = None,
     config_path: Path = Path("conf"),
     config_name: str = "config",
-) -> Config:
+) -> dict:
     """Get Hydra config dictionary.
 
     Initializes environment variables, composes configuration files and returns hydra
@@ -45,4 +30,4 @@ def compose_config(
         dict_config: dict[str, Any] = cast(
             dict[str, Any], OmegaConf.to_container(hydra_config, resolve=True)
         )
-        return Config(**dict_config)
+        return dict_config

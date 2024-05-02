@@ -1,0 +1,9 @@
+SentenceEncoder:
+  _target_: sklearn.feature_extraction.text.TfidfVectorizer
+  ngram_range:
+    _target_: builtins.tuple
+    _args_:
+      - [1, 1]
+
+encode_output: sentence_embedding
+short_name: tfidf_vectorizer_${data.column_use}

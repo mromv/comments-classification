@@ -1,0 +1,9 @@
+SentenceEncoder:
+  _target_: sentence_transformers.SentenceTransformer
+  model_name_or_path : sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  cache_folder: ${general.cache_dir}
+  device: ${general.device}
+
+encode_output: sentence_embedding
+short_name: MiniLM_${encoder.encode_output}
+

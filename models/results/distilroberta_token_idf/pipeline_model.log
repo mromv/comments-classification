@@ -1,0 +1,38 @@
+[2024-05-02 03:45:55,507][__main__][INFO] - Data: distilroberta_token_embeddings-idf.npy; 
+Pipeline params: {'memory': None, 'steps': [('dim_reducer', None), ('classifier', <catboost.core.CatBoostClassifier object at 0x0000013A0E681B50>)], 'verbose': False, 'dim_reducer': None, 'classifier': <catboost.core.CatBoostClassifier object at 0x0000013A0E681B50>, 'classifier__iterations': 1000, 'classifier__learning_rate': 0.01, 'classifier__depth': 9, 'classifier__loss_function': 'MultiClass', 'classifier__random_seed': 42, 'classifier__verbose': False, 'classifier__custom_loss': 'F1', 'classifier__task_type': 'GPU', 'classifier__early_stopping_rounds': 30}
+[2024-05-02 03:45:55,508][__main__][INFO] - Scores on train set:
+[2024-05-02 03:45:55,711][__main__][INFO] -               precision    recall  f1-score   support
+
+           0       0.81      0.95      0.88     14573
+           1       0.91      0.83      0.87     11117
+           2       1.00      0.04      0.07      1327
+           3       0.89      0.57      0.69       823
+
+    accuracy                           0.85     27840
+   macro avg       0.90      0.60      0.63     27840
+weighted avg       0.86      0.85      0.83     27840
+
+[2024-05-02 03:45:55,711][__main__][INFO] - Scores on validation set:
+[2024-05-02 03:45:55,770][__main__][INFO] -               precision    recall  f1-score   support
+
+           0       0.76      0.91      0.83      3123
+           1       0.84      0.75      0.79      2382
+           2       0.00      0.00      0.00       285
+           3       0.81      0.47      0.59       176
+
+    accuracy                           0.79      5966
+   macro avg       0.60      0.53      0.55      5966
+weighted avg       0.76      0.79      0.77      5966
+
+[2024-05-02 03:45:55,770][__main__][INFO] - Scores on test set:
+[2024-05-02 03:45:55,839][__main__][INFO] -               precision    recall  f1-score   support
+
+           0       0.76      0.91      0.83      3122
+           1       0.83      0.74      0.79      2383
+           2       0.00      0.00      0.00       284
+           3       0.71      0.37      0.49       177
+
+    accuracy                           0.78      5966
+   macro avg       0.58      0.51      0.53      5966
+weighted avg       0.75      0.78      0.76      5966
+

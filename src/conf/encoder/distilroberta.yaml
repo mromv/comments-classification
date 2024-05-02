@@ -1,0 +1,8 @@
+SentenceEncoder:
+  _target_: sentence_transformers.SentenceTransformer
+  model_name_or_path : sentence-transformers/xlm-r-distilroberta-base-paraphrase-v1
+  cache_folder: ${general.cache_dir}
+  device: ${general.device}
+
+encode_output: sentence_embedding
+short_name: distilroberta_${encoder.encode_output}
