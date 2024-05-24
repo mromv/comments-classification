@@ -13,4 +13,4 @@
 !.pre-commit-config.yaml
 !/data/
 !/reports/
-!/models/
+!/results/

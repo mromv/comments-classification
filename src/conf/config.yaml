@@ -1,16 +1,23 @@
 defaults:
   - _self_
-  - encoder: MiniLM
+  - encoder: rubert_tiny_2
+  - training: training
+  - loss: focal_loss
+  - peft: lora
   - dim_reduce: none
   - classifier: catboost
 
 data:
   column_use: data_patterns
+  max_length: 512
   ml_data: MiniLM_sentence_embedding.npy
+
+fine_tuning:
+  freeze: 0.99
 
 hydra:
   run:
-    dir: ../outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
   sweep:
     dir: ../m_outputs/${now:%Y-%m-%d}
     subdir: ${now:%Y-%m-%d_%H-%M-%S}_tfidf_reduce_ovo_${hydra.job.num}
@@ -27,6 +34,8 @@ hydra:
 general:
   device: cuda:0
   random_state: 42
-  cache_dir: ../../cache_dir
-  data_dir: ../../data
+  cache_dir: ../cache_dir
+  data_dir: ../data
+  output_dir: ../results
+  checkpoints: ./checkpoints
   test_size: 0.3

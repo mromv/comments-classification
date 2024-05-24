@@ -1,0 +1,16 @@
+model:
+  _target_: transformers.AutoModelForSequenceClassification.from_pretrained
+  _convert_: object
+  pretrained_model_name_or_path: cointegrated/rubert-tiny2
+  problem_type: single_label_classification
+  cache_dir: ${general.cache_dir}
+  device_map: ${general.device}
+
+tokenizer:
+  _target_: transformers.AutoTokenizer.from_pretrained
+  _convert_: object
+  pretrained_model_name_or_path: ${encoder.model.pretrained_model_name_or_path}
+  cache_dir: ${general.cache_dir}
+  device_map: ${general.device}
+
+short_name: rubert-tiny-2

@@ -81,7 +81,7 @@ class SentenceTransformerSelector(BaseEstimator, TransformerMixin):
         return out
 
 
-@hydra.main(version_base=None, config_path="../../src/conf", config_name="config")
+@hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):
     data_path = os.path.join(cfg["general"]["data_dir"], "2_preprocessed_data.csv")
     save_path = os.path.join(cfg["general"]["data_dir"], "embeddings", f"{cfg['encoder']['short_name']}")

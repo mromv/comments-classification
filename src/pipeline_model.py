@@ -3,8 +3,6 @@ import hydra
 from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 
-os.environ['HYDRA_FULL_ERROR'] = '1'
-
 import pandas as pd
 import numpy as np
 import logging
@@ -19,7 +17,7 @@ from catboost import CatBoostClassifier
 log = logging.getLogger(__name__)
 
 
-@hydra.main(version_base=None, config_path="../../src/conf", config_name="config")
+@hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):
     # settings
     random_state = cfg["general"]["random_state"]
