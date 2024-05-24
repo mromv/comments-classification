@@ -95,7 +95,7 @@ def main(cfg: DictConfig):
         cfg["encoder"]["model"], num_labels=len(id2label), id2label=id2label, label2id=label2id
     )
 
-    trainer = make_training_pipeline(model, tokenizer, dataset, cfg["training"], cfg["loss"], checkpoints_dir)
+    trainer = make_training_pipeline(model, tokenizer, dataset, cfg["training"], cfg["peft"], cfg["loss"], checkpoints_dir)
     trainer.train()
     trainer.save_model(output_dir)
 
