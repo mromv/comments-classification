@@ -61,8 +61,6 @@ def load_dataset(
     df = pd.read_csv(data_path, usecols=[use_col, "Category"]).rename(\
             columns={use_col: "text", "Category": "labels"})
 
-    df = df.iloc[:500]
-
     le, df["labels"] = label_encode(df["labels"])
     train_idx, val_idx, test_idx = split(df, test_size, random_seed)
 
