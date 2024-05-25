@@ -5,6 +5,7 @@ from typing import Any
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 
+import pandas as pd
 import numpy as np
 import torch
 
@@ -64,7 +65,7 @@ def make_training_pipeline(
     return trainer
 
 
-def freeze_model(model: AutoModelForSequenceClassification, part: float) -> AutoModelForSequenceClassification:
+def freeze_model(model: AutoModelForSequenceClassification, part: float) -> None:
     weights = sum([p.numel() for p in model.parameters()])
     threshold = part * weights
 
@@ -77,7 +78,6 @@ def freeze_model(model: AutoModelForSequenceClassification, part: float) -> Auto
             break
 
     return model
-
 
 @hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):

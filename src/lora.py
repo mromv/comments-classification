@@ -5,6 +5,7 @@ from typing import Any
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 
+import pandas as pd
 import numpy as np
 import torch
 
@@ -14,6 +15,8 @@ from custom_trainer import (
     CustomTrainer,
     make_classification_report
 )
+
+from fine_tuning import freeze_model
 
 from datasets import (
     load_metric,
@@ -95,7 +98,10 @@ def main(cfg: DictConfig):
         cfg["encoder"]["model"], num_labels=len(id2label), id2label=id2label, label2id=label2id
     )
 
-    trainer = make_training_pipeline(model, tokenizer, dataset, cfg["training"], cfg["peft"], cfg["loss"], checkpoints_dir)
+    trainer = make_training_pipeline(
+        model, tokenizer, dataset, cfg["training"], cfg["peft"], cfg["loss"], checkpoints_dir
+    )
+
     trainer.train()
     trainer.save_model(output_dir)
 

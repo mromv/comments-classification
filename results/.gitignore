@@ -1,11 +1,6 @@
 # Ignore everything in this directory
 *
 # Except this
-!/ml_pipeline/
+!/*/
 !.gitignore
-!*.py
-!*.qmd
-!*.html
 !*.log
-!*.yaml
-!*.hydra

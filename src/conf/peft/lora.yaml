@@ -1,5 +1,5 @@
 _target_: peft.LoraConfig
-r: 16
+r: 8
 lora_alpha: 16
 target_modules: [query, value]
 lora_dropout: 0.1

@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - encoder: rubert_tiny_2
+  - encoder: ruRoberta
   - training: training
   - loss: focal_loss
   - peft: lora
@@ -13,7 +13,7 @@ data:
   ml_data: MiniLM_sentence_embedding.npy
 
 fine_tuning:
-  freeze: 0.99
+  freeze: 0.2
 
 hydra:
   run:
