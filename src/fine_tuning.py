@@ -65,7 +65,7 @@ def make_training_pipeline(
     return trainer
 
 
-def freeze_model(model: AutoModelForSequenceClassification, part: float) -> None:
+def freeze_model(model: AutoModelForSequenceClassification, part: float) -> AutoModelForSequenceClassification:
     weights = sum([p.numel() for p in model.parameters()])
     threshold = part * weights
 
