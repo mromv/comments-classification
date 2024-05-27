@@ -1,0 +1,77 @@
+data:
+  column_use: data_patterns
+  max_length: 512
+  ml_data: MiniLM_sentence_embedding.npy
+fine_tuning:
+  freeze: 0.2
+general:
+  device: cuda:0
+  random_state: 42
+  cache_dir: ../cache_dir
+  data_dir: ../data
+  output_dir: ../results
+  checkpoints: ./checkpoints
+  test_size: 0.3
+encoder:
+  model:
+    _target_: transformers.AutoModelForSequenceClassification.from_pretrained
+    _convert_: object
+    pretrained_model_name_or_path: cointegrated/rubert-tiny2
+    problem_type: single_label_classification
+    cache_dir: ${general.cache_dir}
+    device_map: ${general.device}
+  tokenizer:
+    _target_: transformers.AutoTokenizer.from_pretrained
+    _convert_: object
+    pretrained_model_name_or_path: ${encoder.model.pretrained_model_name_or_path}
+    cache_dir: ${general.cache_dir}
+    device_map: ${general.device}
+  short_name: rubert-tiny-2
+training:
+  _target_: transformers.TrainingArguments
+  num_train_epochs: 20
+  evaluation_strategy: epoch
+  save_strategy: epoch
+  learning_rate: 2.0e-05
+  per_device_train_batch_size: 16
+  per_device_eval_batch_size: ${training.per_device_train_batch_size}
+  weight_decay: 0.01
+  load_best_model_at_end: true
+  metric_for_best_model: f1
+  warmup_steps: 400
+  logging_dir: ./logs
+  logging_steps: 500
+  greater_is_better: true
+  no_cuda: false
+  dataloader_pin_memory: false
+  label_names:
+  - labels
+  seed: ${general.random_state}
+loss:
+  _target_: loss.losses.FocalLoss
+peft:
+  _target_: peft.LoraConfig
+  r: 8
+  lora_alpha: 16
+  target_modules:
+  - query
+  - value
+  lora_dropout: 0.1
+  bias: none
+  modules_to_save:
+  - classifier
+dim_reduce:
+  Model: null
+classifier:
+  Model:
+    _target_: catboost.CatBoostClassifier
+    _convert_: object
+    loss_function: MultiClass
+    depth: 7
+    iterations: 1000
+    learning_rate: 0.01
+    early_stopping_rounds: 30
+    verbose: false
+    task_type: GPU
+    random_seed: ${general.random_state}
+    custom_loss: F1

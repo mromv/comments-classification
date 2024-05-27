@@ -1,0 +1,4 @@
+- encoder=rubert_tiny_2
+- fine_tuning.freeze=0.0
+- training.num_train_epochs=40
+- training.per_device_train_batch_size=32
