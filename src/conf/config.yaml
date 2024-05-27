@@ -1,8 +1,8 @@
 defaults:
   - _self_
-  - encoder: ruRoberta
+  - encoder: rubert_tiny_2
   - training: training
-  - loss: focal_loss
+  - loss: cross_entropy
   - peft: lora
   - dim_reduce: none
   - classifier: catboost
@@ -13,7 +13,8 @@ data:
   ml_data: MiniLM_sentence_embedding.npy
 
 fine_tuning:
-  freeze: 0.2
+  lora: False
+  freeze: 0.99
 
 hydra:
   run:
@@ -38,4 +39,5 @@ general:
   data_dir: ../data
   output_dir: ../results
   checkpoints: ./checkpoints
+  source_data: practice_cleaned.csv
   test_size: 0.3

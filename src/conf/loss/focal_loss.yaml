@@ -1,1 +1,1 @@
-_target_: loss.losses.FocalLoss
+_target_: utils.losses.FocalLoss
