@@ -80,7 +80,6 @@ def load_dataset(
         le, df["labels"] = label_encode(df["Category"])
 
     df = df[["labels", "text"]]
-    df = df.iloc[:1000]
 
     train_idx, val_idx, test_idx = split(df, target, test_size, random_seed)
 
