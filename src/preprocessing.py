@@ -10,16 +10,20 @@ from omegaconf import DictConfig
 nltk.download("stopwords")
 
 
-def source_data(path: str) -> pd.DataFrame:
+def source_data(path: str, target) -> pd.DataFrame:
+    target_ru = "Тег" if target == "tag" else "Категория"
+
     df = pd.read_csv(path).rename(
-        columns={"Комментарий": "Comment", "Категория": "Category", "Тег": "Tag"}
+        columns={"Комментарий": "comment", target_ru: target}
     )
-    df = df.dropna(subset=["Category", "Comment", "Tag"])
-    df = df.drop(df[df["Comment"].str.len() < 10].index)
-    df["Comment"] = df["Comment"].str.lower()
-    df = df.loc[~df["Category"].isin(["Качество материалов", "Интерфейс платформы", "Общение с куратором"])]
+    df = df.dropna(subset=[target, "comment"])
+    return df[[target, "comment"]]
+
+
+def preprocess_categories(df, ex_cats):
+    df = df.loc[~df["category"].isin(ex_cats)]
     df.reset_index(drop=True, inplace=True)
-    return df[["Category", "Tag", "Comment"]]
+    return df
 
 
 def preprocess_comments(df: pd.DataFrame) -> pd.DataFrame:
@@ -63,7 +67,10 @@ def preprocess_comments(df: pd.DataFrame) -> pd.DataFrame:
     def lemmatization(text: str) -> str:
         return " ".join([morph.parse(word)[0].normal_form for word in text.split()])
 
-    df["data_patterns"] = df["Comment"].apply(drop_patterns).apply(drop_emojis)
+    df = df.drop(df[df["comment"].str.len() < 10].index)
+    df["comment"] = df["comment"].str.lower()
+
+    df["data_patterns"] = df["comment"].apply(drop_patterns).apply(drop_emojis)
     df["data_stopwords"] = df["data_patterns"].apply(remove_stopwords)
     df["data_lemma"] = df["data_stopwords"].apply(lemmatization)
 
@@ -79,7 +86,7 @@ def preprocess_tags(df: pd.DataFrame) -> pd.DataFrame:
         new_tag = [x[:-1] if x[-1].isdigit() else x for x in split]
         return " ".join(new_tag)
 
-    df["corrected_tag"] = df["Tag"].apply(
+    df["corrected_tag"] = df["tag"].apply(
         lambda x: " ".join(re.findall(r"[A-Z]{1,2}\d|LMS", str(x)))
     ).apply(
         lambda x:
@@ -95,20 +102,21 @@ def preprocess_tags(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df[df["corrected_tag"].apply(len) != 0]
     df = df.loc[~df["corrected_tag"].str.contains("E2")]
-    df["Tag"] = df["corrected_tag"].apply(remove_sub_tags)
+    df["tag"] = df["corrected_tag"].apply(remove_sub_tags)
     return df.drop(columns="corrected_tag")
 
 
 @hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):
-    in_path = os.path.join(cfg["general"]["data_dir"], cfg["general"]["source_data"])
-    out_path = os.path.join(cfg["general"]["data_dir"], "preprocessed_data_w_tags.csv")
-
-    data = source_data(in_path)
+    data = source_data(cfg["data"]["input_path"], cfg["data"]["target"])
     data = preprocess_comments(data)
-    data = preprocess_tags(data)
 
-    data.to_csv(out_path, index=False)
+    if cfg["data"]["target"] == "tag":
+        data = preprocess_tags(data)
+    else:  # category
+        data = preprocess_categories(data, cfg["data"]["small_cats"])
+
+    data.to_csv(cfg["data"]["interim_output"], index=False)
 
 
 if __name__ == "__main__":

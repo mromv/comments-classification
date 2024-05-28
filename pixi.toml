@@ -3,7 +3,7 @@ name = "comments-classification-maksim-romanov"
 version = "0.1.0"
 description = "ML practice"
 authors = ["Maksim Romanov <mxromv@gmail.com>"]
-channels = ["nvidia", "pytorch", "conda-forge", "anaconda"]
+channels = ["nvidia", "pytorch", "conda-forge", "anaconda", "bioconda"]
 platforms = ["linux-64", "win-64"]
 readme = "README.md"
 
@@ -50,6 +50,7 @@ sentence-transformers = ">=2.0.0,<2.6"
 seaborn = "0.13.0"
 wordcloud = ">=1.9"
 peft = "0.8.2"
+snakemake = ">=8.11.6,<8.12"
 
 
 [pypi-dependencies]

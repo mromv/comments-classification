@@ -1,3 +1,0 @@
-Model:
-  _target_: sklearn.decomposition.PCA
-  n_components: 50

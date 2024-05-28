@@ -31,11 +31,11 @@ def split(
     all_ids = np.arange(len(dataframe))
     train_idx, temp = train_test_split(all_ids, test_size=test_size,
                                        random_state=random_seed,
-                                       stratify=dataframe["labels"] if target=="Category" else None
+                                       stratify=dataframe["labels"] if target=="category" else None
                                        )
     test_idx, val_idx = train_test_split(temp, test_size=test_size,
                                          random_state=random_seed,
-                                         stratify=dataframe.iloc[temp]["labels"] if target=="Category" else None
+                                         stratify=dataframe.iloc[temp]["labels"] if target=="category" else None
                                          )
 
     return train_idx, val_idx, test_idx
@@ -71,13 +71,13 @@ def load_dataset(
     device: torch.device,
 ) -> tuple[DatasetDict, dict, dict]:
 
-    df = pd.read_csv(data_path, usecols=[use_col, "Category", "Tag"]).rename(\
+    df = pd.read_csv(data_path, usecols=[use_col, target]).rename(\
             columns={use_col: "text"})
 
-    if target == "Tag":
-        le, df["labels"] = tags_encode(df["Tag"])
-    else:
-        le, df["labels"] = label_encode(df["Category"])
+    if target == "tag":
+        le, df["labels"] = tags_encode(df["tag"])
+    else:  # category
+        le, df["labels"] = label_encode(df["category"])
 
     df = df[["labels", "text"]]
 

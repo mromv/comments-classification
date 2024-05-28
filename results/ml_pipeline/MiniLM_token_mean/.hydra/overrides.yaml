@@ -1,5 +1,0 @@
-- data.ml_data=MiniLM_token_embeddings-mean.npy
-- dim_reduce=none
-- classifier=catboost
-- classifier.Model.depth=9
-- classifier.Model.learning_rate=0.01

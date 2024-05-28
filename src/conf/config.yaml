@@ -4,40 +4,29 @@ defaults:
   - training: training
   - loss: cross_entropy
   - peft: lora
-  - dim_reduce: none
-  - classifier: catboost
-
-data:
-  column_use: data_patterns
-  max_length: 512
-  ml_data: MiniLM_sentence_embedding.npy
-
-fine_tuning:
-  lora: False
-  freeze: 0.99
 
 hydra:
   run:
     dir: ./outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  sweep:
-    dir: ../m_outputs/${now:%Y-%m-%d}
-    subdir: ${now:%Y-%m-%d_%H-%M-%S}_tfidf_reduce_ovo_${hydra.job.num}
 
-  sweeper:
-    params:
-      data.ml_data: distilroberta_token_embeddings-idf.npy, distilroberta_token_embeddings-mean.npy,
-                    MiniLM_sentence_embedding.npy, MiniLM_token_embeddings-idf.npy, MiniLM_token_embeddings-mean.npy
-      dim_reduce: none
-      classifier: catboost
-      classifier.Model.depth: 9
-      classifier.Model.learning_rate: 0.01
+data:
+  input_path: ../data/practice_cleaned.csv
+  interim_output: ../data/interim/${data.target}.csv
+  column_use: data_patterns
+  target: tag
+  small_cats: ["Качество материалов", "Интерфейс платформы", "Общение с куратором"]
+  max_length: 512
+
+model:
+  cache_dir: ../cache_dir
+  output_dir: ../results
+  checkpoints: ./checkpoints
+
+fine_tuning:
+  lora: False
+  freeze: 0.0
 
 general:
   device: cuda:0
   random_state: 42
-  cache_dir: ../cache_dir
-  data_dir: ../data
-  output_dir: ../results
-  checkpoints: ./checkpoints
-  source_data: practice_cleaned.csv
   test_size: 0.3

@@ -1,5 +1,0 @@
-- data.ml_data=distilroberta_sentence_embedding.npy
-- dim_reduce=none
-- classifier=catboost
-- classifier.Model.depth=9
-- classifier.Model.learning_rate=0.01

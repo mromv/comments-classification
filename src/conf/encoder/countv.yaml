@@ -1,9 +1,0 @@
-SentenceEncoder:
-  _target_: sklearn.feature_extraction.text.CountVectorizer
-  ngram_range:
-    _target_: builtins.tuple
-    _args_:
-      - [1, 1]
-
-encode_output: sentence_embedding
-short_name: count_vectorizer_${data.column_use}
