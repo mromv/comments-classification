@@ -68,7 +68,7 @@ def make_training_pipeline(
 
 @hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):
-    device = torch.device(cfg["general"]["device"]) if torch.cuda.is_available() else torch.device("cpu")
+    device = torch.device(cfg["general"]["device"])
     data_path = os.path.join(cfg["general"]["data_dir"], "preprocessed_data_w_tags.csv")
     output_dir = os.path.join(cfg["general"]["output_dir"], cfg["encoder"]["short_name"], "Tag")
     checkpoints_dir = os.path.join(cfg["general"]["checkpoints"], cfg["encoder"]["short_name"], "Tag")

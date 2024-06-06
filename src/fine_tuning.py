@@ -3,7 +3,7 @@ import hydra
 import logging
 from typing import Any
 from hydra.utils import instantiate
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 import pandas as pd
 import numpy as np
@@ -71,7 +71,8 @@ def make_training_pipeline(
 
 @hydra.main(version_base=None, config_path="./conf", config_name="config")
 def main(cfg: DictConfig):
-    device = torch.device(cfg["general"]["device"]) if torch.cuda.is_available() else torch.device("cpu")
+    cfg = OmegaConf.to_container(cfg, resolve=True)
+    device = torch.device(cfg["general"]["device"])
     data_path = os.path.join(cfg["general"]["data_dir"], "preprocessed_data_w_tags.csv")
     output_dir = os.path.join(cfg["general"]["output_dir"], cfg["encoder"]["short_name"])
     checkpoints_dir = os.path.join(cfg["general"]["checkpoints"], cfg["encoder"]["short_name"])
@@ -103,7 +104,8 @@ def main(cfg: DictConfig):
             target_modules=cfg["peft"]["target_modules"],
             lora_dropout=cfg["peft"]["lora_dropout"],
             bias=cfg["peft"]["bias"],
-            modules_to_save=cfg["peft"]["modules_to_save"]
+            modules_to_save=cfg["peft"]["modules_to_save"],
+            task_type=cfg["peft"]["task_type"]
         )
         model = get_peft_model(model, config)
     else:
